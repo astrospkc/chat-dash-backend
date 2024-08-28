@@ -4,12 +4,13 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/User.js";
 import chatRouter from "./routes/Chat.js";
+import MessageRouter from "./routes/Message.js";
 
 import cors from "cors";
 dotenv.config();
 connectDB();
 const app = express();
-const PORT = 4000;
+const PORT = 5000;
 app.use(express.json());
 app.use(cors());
 
@@ -26,7 +27,8 @@ app.get("/", (req, res) => {
 //   const user = chats.find((chat) => chat._id == req.params.id);
 //   res.send(user);
 // });
-app.use("/chats", chatRouter);
+app.use("/api/chats", chatRouter);
+app.use("/api/messages", MessageRouter);
 
 app.use("/api/users", userRouter);
 

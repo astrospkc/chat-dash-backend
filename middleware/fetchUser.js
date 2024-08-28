@@ -14,9 +14,10 @@ const fetchUser = async (req, res, next) => {
       res.status(401).send("Please login first with valid credentials");
     }
     const data = jwt.verify(token, JWT_SECRET);
-    console.log("data.user ", data.user.user);
+    console.log("data: ", data);
+    console.log("data.user ", data.user._id);
     req.user = data.user;
-    console.log("req.user: ", req.user.user);
+    console.log("req.user: ", req.user._id);
     next();
   } catch (error) {
     console.log("error: ", error);

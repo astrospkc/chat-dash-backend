@@ -44,10 +44,10 @@ const registerUser = async (req, res) => {
     // Generate a JWT token
     const data = {
       user: {
-        id: user._id,
+        _id: user._id,
       },
     };
-    const authToken = jwt.sign(data, JWT_SECRET, { expiresIn: "1h" }); // Set the expiration time (e.g., 1 hour)
+    const authToken = jwt.sign(data, JWT_SECRET); // Set the expiration time (e.g., 1 hour)
 
     // Send the response with success, authToken, and user data
     res.status(201).json({ success: true, authToken, user });
@@ -80,7 +80,7 @@ const loginUser = async (req, res) => {
 
       const data = {
         user: {
-          user: user.id,
+          _id: user._id,
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
@@ -105,13 +105,38 @@ const searchUser = async (req, res) => {
           ],
         }
       : {};
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    const users = await User.find(keyword)
+      .find({ _id: { $ne: req.user._id } })
+      .select("-password");
     res.send(users);
   } catch (error) {}
+};
+
+const userInfo = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+// fetch user with id
+const fetchUserWithId = async (req, res) => {
+  try {
+    const userId = req.body.id;
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  } catch (error) {
+    throw new Error(erro);
+  }
 };
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", fetchUser, searchUser);
+router.get("/userInfo", fetchUser, userInfo);
+router.get("/fetchUserWithId", fetchUser, fetchUserWithId);
 
 export default router;
