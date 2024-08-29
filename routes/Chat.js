@@ -10,8 +10,8 @@ const accessChats = async (req, res, next) => {
   const { userId } = req.body;
 
   try {
-    console.log("req.user: ", req.user);
-    console.log("userId: ", userId, "req.user: ", req.user._id);
+    // console.log("req.user: ", req.user);
+    // console.log("userId: ", userId, "req.user: ", req.user._id);
 
     // Check if the chat already exists
     const isChat = await Chat.find({
@@ -31,7 +31,7 @@ const accessChats = async (req, res, next) => {
     });
 
     if (isChat.length > 0) {
-      console.log("ischat[0]: ", isChat[0]);
+      // console.log("ischat[0]: ", isChat[0]);
       return res.status(200).json({ success: true, chat: isChat[0] });
     }
 
@@ -47,11 +47,11 @@ const accessChats = async (req, res, next) => {
       "users",
       "-password"
     );
-    console.log("fullChat: ", fullChat);
+    // console.log("fullChat: ", fullChat);
 
     return res.status(201).json({ chat: fullChat });
   } catch (error) {
-    console.error("Error accessing chats:", error);
+    // console.error("Error accessing chats:", error);
     return next(error); // Pass the error to the next middleware
   }
 };
@@ -71,7 +71,7 @@ const fetchChats = async (req, res) => {
       select: "name, pic, email",
     });
 
-    console.log("chat: ", results);
+    // console.log("chat: ", results);
     res.status(200).send(results);
   } catch (error) {
     throw new Error(error);
@@ -86,7 +86,7 @@ const createGroupChat = async (req, res) => {
   if (users.length < 2) {
     res.status(400).send("more than 2 users are required for the group chat");
   }
-  console.log("req.user:", req.user);
+  // console.log("req.user:", req.user);
   users.push(req.user);
 
   try {

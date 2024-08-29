@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET; // Get the JWT secret from environmen
 
 // Register route
 const registerUser = async (req, res) => {
-  console.log("req.body : ", req.body);
+  // console.log("req.body : ", req.body);
   try {
     const { name, username, email, password, pic } = req.body;
 
@@ -52,7 +52,7 @@ const registerUser = async (req, res) => {
     // Send the response with success, authToken, and user data
     res.status(201).json({ success: true, authToken, user });
   } catch (error) {
-    console.error("Error:", error);
+    // console.error("Error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
       res.send({ success, authtoken });
     }
   } catch (error) {
-    console.log("error while login: ", error);
+    // console.log("error while login: ", error);
     res.status(500).send("Internal server error");
   }
 };
