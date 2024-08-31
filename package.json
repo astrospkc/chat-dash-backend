@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "node index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
