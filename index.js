@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/User.js";
 import chatRouter from "./routes/Chat.js";
 import MessageRouter from "./routes/Message.js";
+import NotificationRouter from "./routes/Notificaton.js";
 import { Server } from "socket.io";
 import path from "path";
 import cors from "cors";
@@ -32,6 +33,7 @@ app.use("/api/chats", chatRouter);
 app.use("/api/messages", MessageRouter);
 
 app.use("/api/users", userRouter);
+app.use("/api/notifications", NotificationRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`listening to the port http://localhost:${PORT}`);
@@ -48,7 +50,10 @@ io.on("connection", (socket) => {
   console.log("connected to socket.io");
   socket.on("setup", (userdata) => {
     console.log("userdata: ", userdata);
-    socket.join(userdata._id);
+    if (userdata) {
+      socket.join(userdata._id);
+    }
+
     socket.emit("connected");
   });
 
