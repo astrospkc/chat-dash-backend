@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "node index.js",
     "build": "node index.js"
   },
   "dependencies": {

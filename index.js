@@ -11,7 +11,7 @@ import cors from "cors";
 dotenv.config();
 connectDB();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 // const allowedOrigins = [
 //   "https://chat-dash-gamma.vercel.app/",
@@ -39,9 +39,6 @@ app.use("/api/chats", chatRouter);
 app.use("/api/messages", MessageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/notifications", NotificationRouter);
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
 
 const server = app.listen(PORT, () => {
   console.log(`listening to the port http://localhost:${PORT}`);
