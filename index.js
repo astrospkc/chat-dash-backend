@@ -14,8 +14,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
-  "https://chat-dash-gamma.vercel.app",
-  "http://localhost:5173",
+  "https://chat-dash-gamma.vercel.app/",
+  // "http://localhost:5173",
 ];
 
 app.use(
