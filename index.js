@@ -1,5 +1,4 @@
 import express from "express";
-import chats from "./data/data.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/User.js";
@@ -7,31 +6,33 @@ import chatRouter from "./routes/Chat.js";
 import MessageRouter from "./routes/Message.js";
 import NotificationRouter from "./routes/Notificaton.js";
 import { Server } from "socket.io";
-import path from "path";
 import cors from "cors";
+
 dotenv.config();
 connectDB();
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = [
+  "https://chat-dash-gamma.vercel.app",
+  "http://localhost:5173",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
+
 app.use(express.json());
-app.use(cors());
 
 app.get("/", (req, res) => {
   console.log("hi there");
   res.send("hi there");
 });
 
-// app.get("/api/chats", (req, res) => {
-//   res.send(chats);
-// });
-
-// app.get("/api/chats/:id", (req, res) => {
-//   const user = chats.find((chat) => chat._id == req.params.id);
-//   res.send(user);
-// });
 app.use("/api/chats", chatRouter);
 app.use("/api/messages", MessageRouter);
-
 app.use("/api/users", userRouter);
 app.use("/api/notifications", NotificationRouter);
 
@@ -42,10 +43,13 @@ const server = app.listen(PORT, () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
+    // methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
+// Socket.io connection logic...
 io.on("connection", (socket) => {
   console.log("connected to socket.io");
   socket.on("setup", (userdata) => {
