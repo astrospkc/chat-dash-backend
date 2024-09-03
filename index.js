@@ -22,6 +22,9 @@ const allowedOrigins = "https://chat-dash-gamma.vercel.app/";
 app.use(
   cors({
     origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
@@ -36,53 +39,56 @@ app.use("/api/chats", chatRouter);
 app.use("/api/messages", MessageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/notifications", NotificationRouter);
-
-const server = app.listen(PORT, () => {
-  console.log(`listening to the port http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const io = new Server(server, {
-  pingTimeout: 60000,
-  cors: {
-    origins: allowedOrigins,
-    // methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+// const server = app.listen(PORT, () => {
+//   console.log(`listening to the port http://localhost:${PORT}`);
+// });
 
-// Socket.io connection logic...
-io.on("connection", (socket) => {
-  console.log("connected to socket.io");
-  socket.on("setup", (userdata) => {
-    console.log("userdata: ", userdata);
-    if (userdata) {
-      socket.join(userdata._id);
-    }
+// const io = new Server(server, {
+//   pingTimeout: 60000,
+//   cors: {
+//     origins: allowedOrigins,
+//     // methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
 
-    socket.emit("connected");
-  });
+// // Socket.io connection logic...
+// io.on("connection", (socket) => {
+//   console.log("connected to socket.io");
+//   socket.on("setup", (userdata) => {
+//     console.log("userdata: ", userdata);
+//     if (userdata) {
+//       socket.join(userdata._id);
+//     }
 
-  socket.on("join chat", (room) => {
-    socket.join(room);
-    console.log("user connected room ", room);
-  });
+//     socket.emit("connected");
+//   });
 
-  socket.on("typing", (room) => socket.in(room).emit("typing"));
-  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+//   socket.on("join chat", (room) => {
+//     socket.join(room);
+//     console.log("user connected room ", room);
+//   });
 
-  socket.on("new message", (newMessageRecieved) => {
-    var chat = newMessageRecieved.chat;
-    if (!chat.users) {
-      return "chat.users not defined";
-    }
-    chat.users.forEach((user) => {
-      if (user._id === newMessageRecieved.sender._id) return;
-      socket.in(user._id).emit("message received", newMessageRecieved);
-    });
-  });
+//   socket.on("typing", (room) => socket.in(room).emit("typing"));
+//   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-  socket.off("setup", () => {
-    console.log("user disconnected");
-    socket.leave(userdata._id);
-  });
-});
+//   socket.on("new message", (newMessageRecieved) => {
+//     var chat = newMessageRecieved.chat;
+//     if (!chat.users) {
+//       return "chat.users not defined";
+//     }
+//     chat.users.forEach((user) => {
+//       if (user._id === newMessageRecieved.sender._id) return;
+//       socket.in(user._id).emit("message received", newMessageRecieved);
+//     });
+//   });
+
+//   socket.off("setup", () => {
+//     console.log("user disconnected");
+//     socket.leave(userdata._id);
+//   });
+// });
