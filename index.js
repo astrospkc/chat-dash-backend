@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 //   "https://chat-dash-gamma.vercel.app/",
 //   // "http://localhost:5173",
 // ];
-const allowedOrigins = "https://chat-dash-gamma.vercel.app/";
+const allowedOrigins = "https://chat-dash-gamma.vercel.app";
 
 app.use(
   cors({
