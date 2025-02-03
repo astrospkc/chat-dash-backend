@@ -105,6 +105,7 @@ const searchUser = async (req, res) => {
           ],
         }
       : {};
+    console.log(keyword);
     const users = await User.find(keyword)
       .find({ _id: { $ne: req.user._id } })
       .select("-password");
@@ -133,10 +134,27 @@ const fetchUserWithId = async (req, res) => {
   }
 };
 
+// fetch user with name
+const fetchUserWithName = async (req, res) => {
+  try {
+    const { username } = req.params;
+    console.log(username);
+    const user = await User.find({
+      username: username,
+    }).select("-password");
+    console.log(user);
+
+    res.send(user);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", fetchUser, searchUser);
 router.get("/userInfo", fetchUser, userInfo);
 router.get("/fetchUserWithId", fetchUser, fetchUserWithId);
+router.get("/fetchuserwithname/:username", fetchUser, fetchUserWithName);
 
 export default router;

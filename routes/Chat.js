@@ -79,20 +79,40 @@ const fetchChats = async (req, res) => {
 };
 
 const createGroupChat = async (req, res) => {
+  console.log(req.body.users);
   if (!req.body.users || !req.body.chatName) {
     res.status(400).send("Please fill all the fields");
   }
-  var users = JSON.parse(req.body.users);
+  let users = req.body.users;
+
+  const userIds = async (users_a) => {
+    let ids = [];
+    for (const user of users) {
+      try {
+        let u = await User.findOne({ username: user }).select("-password");
+        if (u) {
+          ids.push(u._id); // Push the user's ID if found
+        } else {
+          console.warn(`User not found: ${user}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching user ${user}:`, error);
+      }
+    }
+    return ids; // Return the array of IDs
+  };
+  let user_arr = await userIds(users);
+  console.log("users", user_arr);
   if (users.length < 2) {
     res.status(400).send("more than 2 users are required for the group chat");
   }
   // console.log("req.user:", req.user);
-  users.push(req.user);
+  user_arr.push(req.user);
 
   try {
     const groupChat = await Chat.create({
       chatName: req.body.chatName,
-      users: users,
+      users: user_arr,
       isGroupChat: true,
       groupAdmin: req.user,
     });
@@ -107,6 +127,10 @@ const createGroupChat = async (req, res) => {
     throw new Error(error);
   }
 };
+
+// ------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------------------
 
 const renameGroup = async (req, res) => {
   const { chatId, chatName } = req.body;
